@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--Resultset으로 나온 결과를 MenuDTO로 맵핑해주는 것-->
+<mapper namespace="MenuMapper">
+    <resultMap type="MenuDTO" id="menuResultMap">
+        <id property="menuCode" column="MENU_CODE"/>
+        <result property="menuName" column="MENU_NAME"/>
+        <result property="menuPrice" column="MENU_PRICE"/>
+        <result property="categoryCode" column="CATEGORY_CODE"/>
+        <result property="orderableStatus" column="ORDERABLE_STATUS"/>
+    </resultMap>
+
+<!-- MenuDAO와 맵핑
+    menuResultMap 맵핑을 활용해서 결과로 도출되는 한 행마다 맵핑해줘(?)
+-->
+    <select id="selectAllMenus" resultMap="menuResultMap">
+        SELECT
+        MENU_CODE
+        , MENU_NAME
+        , MENU_PRICE
+        , CATEGORY_CODE
+        , ORDERABLE_STATUS
+        FROM TBL_MENU
+    </select>
+    <select id="selectMenu" parameterType="_int" resultMap="menuResultMap">
+        SELECT
+            MENU_CODE
+            , MENU_NAME
+            , MENU_PRICE
+            , CATEGORY_CODE
+            , ORDERABLE_STATUS
+          FROM TBL_MENU
+        WHERE MENU_CODE = #{menuCode}
+    </select>
+<!--    insert 는 resultType이 따로 없다.  -->
+<!--    <insert id="insertMenu" parameterType="com.ohgiraffers.section01.xmlconfig.MenuDTO">-->
+    <insert id="insertMenu" parameterType="MenuDTO">
+        INSERT
+          INTO TBL_MENU
+        (
+          MENU_NAME
+        , MENU_PRICE
+        , CATEGORY_CODE
+        , ORDERABLE_STATUS
+        )
+        VALUES
+        (
+           #{menuName}
+        ,  #{menuPrice}
+        ,  #{categoryCode}
+        , 'Y'
+        )
+    </insert>
+    <update id="updateMenu" parameterType="MenuDTO">
+        UPDATE
+            TBL_MENU
+            SET  MENU_NAME = #{menuName}
+                ,MENU_PRICE = #{menuPrice}
+        WHERE MENU_CODE = #{menuCode}
+    </update>
+    <delete id="deleteMenu" parameterType="_int">
+        DELETE
+          FROM TBL_MENU
+        WHERE MENU_CODE = #{menuCode}
+    </delete>
+</mapper>
